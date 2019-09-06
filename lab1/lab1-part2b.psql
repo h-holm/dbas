@@ -1,0 +1,12 @@
+-- Produce a relation with a single attribute ‘name’ and which contains the
+-- names of either countries starting with ‘Z’ or cities ending with ‘q’.
+
+-- EXPLAIN ANALYZE
+
+(SELECT name
+  FROM country
+  WHERE (name LIKE 'Z%'))
+UNION
+(SELECT name
+  FROM city
+  WHERE (name LIKE '%q'))

@@ -1,0 +1,18 @@
+\d
+\d <relation name>
+
+SELECT * from geo_island LIMIT 5;
+
+SELECT * FROM CITY WHERE POPULATION > 13000000;
+
+SELECT code FROM country WHERE name='Sweden';
+
+SELECT name FROM city WHERE country='S' AND population>500000;
+
+SELECT name, population, elevation FROM city WHERE elevation < 0;
+
+SELECT SUM(population) FROM city WHERE elevation < 0;
+
+SELECT name FROM city WHERE ((name LIKE 'Los%') OR (name LIKE '%burgh'));
+
+SELECT name, population FROM country ORDER BY population DESC LIMIT 5;

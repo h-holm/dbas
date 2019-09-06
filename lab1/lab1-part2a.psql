@@ -1,0 +1,11 @@
+-- Produce a list of top 5 city names and city elevations, as well as country
+-- names (in long form, not just the country code) for those cities by city
+-- elevation in descending order. Do not display results for cities with NULL
+-- elevation.
+
+SELECT country.name AS countryName,
+       city.name AS cityName, city.elevation
+  FROM country, city
+  WHERE country.code = city.country AND NOT city.elevation IS NULL
+  ORDER BY elevation DESC
+  LIMIT 5;
