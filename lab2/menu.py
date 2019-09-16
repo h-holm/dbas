@@ -5,9 +5,9 @@ from sys import argv
 class Program:
     def __init__(self): #PG-connection setup
         # local server:
-        # params = {'host':'', 'user':'postgres', 'database':'', 'password':''}
+        params = {'host':'', 'user':'postgres', 'database':'', 'password':''}
         # kth server:
-        params = {'host':'nestor2.csc.kth.se', 'user': 'yourkthusername', 'database':'', 'password':'yournestorpassword'}
+        # params = {'host':'nestor2.csc.kth.se', 'user': 'yourkthusername', 'database':'', 'password':'yournestorpassword'}
         self.conn = pgdb.Connection(**params)
         self.conn.autocommit=False
         # specify the command line menu here
@@ -31,7 +31,7 @@ class Program:
                 print("Invalid choice.")
             except (NameError,ValueError, TypeError,SyntaxError):
                 print("That was not a number, genious.... :(")
- 
+
     def population_query(self):
         minpop = raw_input("min_population: ")
         maxpop = raw_input("max_population: ")
@@ -41,7 +41,7 @@ class Program:
         self.cur.execute(query)
         self.print_answer()
 
-    def exit(self):    
+    def exit(self):
         self.cur.close()
         self.conn.close()
         exit()

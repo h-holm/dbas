@@ -1,0 +1,54 @@
+-- a) Create a MATERIALIZED VIEW called PopData about city population developments where we augment the yearly population data in citypops with additional information about cities and the economy of the countries within which they lie. We will use this view as the basis for our data science exploration.
+-- Each row (one per year of data and city in a country) should contain
+-- from citypops:
+-- ◦ year: year of population data sample
+-- ◦ name: city name
+-- ◦ population: population for that year
+-- ◦ country: country code
+-- Additionally add to each row, associated data from city:
+-- ◦ longitude: of city in question
+-- ◦ latitude: of city in question
+-- ◦ elevation: of city in question
+-- And add most recent information about country economy in which city lies from economy relation:
+-- ◦ agriculture, service, industry: percentages of gdp-composition of these sectors
+-- ◦ inflation: percentage
+
+
+
+-- SELECT *
+-- FROM
+-- (
+--   SELECT derived_table.country AS country, year, city AS name, population,
+--          longitude, latitude, elevation,
+--          agriculture, service, industry, inflation
+--   FROM
+--     (
+--       SELECT citypops.country, citypops.year, citypops.city, citypops.population,
+--            city.longitude, city.latitude, city.elevation
+--       FROM citypops JOIN city ON (citypops.country = city.country AND citypops.city = city.name)
+--     ) AS derived_table JOIN economy ON (economy.country = derived_table.country)
+-- ) AS PopData
+-- WHERE name LIKE 'Santiago%';
+
+
+-- CREATE MATERIALIZED VIEW PopData AS
+-- (
+--   SELECT derived_table.country AS country, year, city AS name, population,
+--          longitude, latitude, elevation,
+--          agriculture, service, industry, inflation
+--   FROM
+--     (
+--       SELECT citypops.country, citypops.year, citypops.city, citypops.population,
+--            city.longitude, city.latitude, city.elevation
+--       FROM citypops JOIN city ON (citypops.country = city.country AND citypops.city = city.name)
+--     ) AS derived_table JOIN economy ON (economy.country = derived_table.country)
+-- );
+
+
+SELECT * FROM popdata WHERE name LIKE 'Santiago%';
+
+
+-- B) A Virtual View is not stored. It is only displayed. We need ours stored on
+-- disk. Therefore, we create a materialized view, which is a physical copy of the
+-- table. What's more, and perhaps more importantly, is that a materialized view is
+-- processed much faster, since it is not recreated for each query.

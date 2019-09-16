@@ -13,11 +13,11 @@ import matplotlib.pyplot as plt
 
 
 # If you are using a local postgres server as user postgres with default database 'postgres'
-# params = {'host':'', 'user':'postgres', 'database':'', 'password':''}
-# If you are using nestor2, copy this python file to u-shell and then execute there 
+params = {'host':'', 'user':'postgres', 'database':'', 'password':''}
+# If you are using nestor2, copy this python file to u-shell and then execute there
 # note that you can connect to nestor2 also from your home computer directly once you have
 # the password.
-params = {'host':'nestor2.csc.kth.se', 'user': 'your_kthusername', 'database':'', 'password':'your_postgres_password'}
+# params = {'host':'nestor2.csc.kth.se', 'user': 'your_kthusername', 'database':'', 'password':'your_postgres_password'}
 
 connection1 = pgdb.Connection(**params)
 connection1.autocommit=False
@@ -29,7 +29,7 @@ def drop():
     try:
         query = "DROP TABLE XYData";
         cursor1.execute(query)
-        connection1.commit()  
+        connection1.commit()
         # by default in pgdb, all executed queries for connection 1 up to here form a transaction
         # we can also explicitly start tranaction by executing BEGIN TRANSACTION
     except:
@@ -91,5 +91,3 @@ plt.scatter(xs, ys)
 plt.show()  # display figure if you run this code locally
 plt.savefig("figure.png") # save figure as image in local directory
 close()
-
-
