@@ -34,7 +34,7 @@ def drop():
         # we can also explicitly start tranaction by executing BEGIN TRANSACTION
     except:
         # Errors in python are caught using try ... except
-        print "ROLLBACK: XYData table does not exists or other error."
+        print("ROLLBACK: XYData table does not exists or other error.")
         connection1.rollback()
         pass
 
@@ -69,14 +69,14 @@ def query():
         # you access ith component of row r with r[i], indexing starts with 0
         # check for null values represented as "None" in python before conversion and drop
         # row whenever NULL occurs
-        print "Considering tuple", r
+        print("Considering tuple", r)
         if (r[0]!=None and r[0]!=None):
             xs.append(float(r[0]))
             ys.append(float(r[1]))
         else:
-            print "Dropped tuple ", r
-    print "xs:", xs
-    print "ys:", ys
+            print("Dropped tuple ", r)
+    print("xs:", xs)
+    print("ys:", ys)
     return [xs, ys]
 
 def close():
