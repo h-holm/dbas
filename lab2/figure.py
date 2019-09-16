@@ -38,6 +38,7 @@ def drop():
         connection1.rollback()
         pass
 
+
 def init():
     # Create table sales and add two initial tuples
     query = "CREATE TABLE XYData(x decimal, y decimal)";
@@ -55,6 +56,7 @@ def init():
 
     # this commits all executed queries forming a transaction up to this point
     connection1.commit()
+
 
 def query():
     # Here we test some concurrency issues.
@@ -78,6 +80,7 @@ def query():
     print("xs:", xs)
     print("ys:", ys)
     return [xs, ys]
+
 
 def close():
     connection1.close()

@@ -1,5 +1,7 @@
 #!/usr/bin/python
 import pgdb
+import matplotlib
+import matplotlib.pyplot as plt
 from sys import argv
 
 
@@ -46,6 +48,14 @@ class Program:
 
         self.cur.execute(query)
         self.print_answer()
+
+
+    def population_scatterplot(self):
+        query = "SELECT * FROM ".format()
+        [xs, ys] = query()
+        plt.scatter(xs, ys)
+        plt.show()  # display figure if you run this code locally
+        plt.savefig("figure.png") # save figure as image in local directory
 
 
     def exit(self):
