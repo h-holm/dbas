@@ -8,8 +8,6 @@ import pgdb
 
 #If you are using a local postgres server as user postgres with default database 'postgres'
 params = {'host':'', 'user':'postgres', 'database':'', 'password':''}
-#If you are using nestor2, copy this python file to u-shell and then execute there
-# params = {'host':'nestor2.csc.kth.se', 'user': 'your_kthusername', 'database':'', 'password':'your_postgres_password'}
 
 # We work with two connections to the database, simulating concurrent users. These
 # connections could be remote, in separate programs etc, but we run them in the same file

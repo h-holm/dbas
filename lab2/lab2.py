@@ -2,6 +2,7 @@
 import pgdb
 import matplotlib
 import matplotlib.pyplot as plt
+import numpy as np
 from sys import argv
 
 
@@ -152,27 +153,13 @@ class Program:
         plt.savefig("Errorplot.png")
 
 
-    def fit_line(self):
-        """
-        b)  Let us attempt to predict a city’s population by fitting a line
-            y = ax + b to the y=population, x=year data per city.
-            PostgreSQL has aggregation functions to find a best-fitting line
-            approximation to a set of x coordinates X and y coordinates
-            Y: regr_slope(Y, X) (gives a), regr_intercept(Y, X) (gives b) and
-            the degree of determination r2 measures how closely the data follows
-            a linear trend r2 = regr_r2(Y, X) (1 = data follows linear trend, 0
-            does not follow linear trend at all).
-        """
-        pass
-
-
     def scatterplot_user_input(self):
         """
-        Now create a text menu in python that asks a user a city and associated
-        country and creates a figure that displays all the population, year
-        datapoints for the city as a scatterplot with x-axis = year, y-axis =
-        population as well as predicted behavior of population as a line y =
-        ax + b on a graph.
+        c)  Now create a text menu in python that asks a user a city and associated
+            country and creates a figure that displays all the population, year
+            datapoints for the city as a scatterplot with x-axis = year, y-axis =
+            population as well as predicted behavior of population as a line y =
+            ax + b on a graph.
         """
 
         cities_query = "SELECT DISTINCT city, country FROM citypops;"
@@ -219,7 +206,7 @@ class Program:
         years = list()
         pops = list()
         for y_p in years_pops:
-            print("Considering tuple", y_p)
+            # print("Considering tuple", y_p)
             if (y_p[0] != None and y_p[1] != None):
                 years.append(y_p[0])
                 pops.append(y_p[1])
@@ -227,22 +214,42 @@ class Program:
                 print("Dropped tuple ", y_p)
 
 
-        line_query = "SELECT a, b, yearfrom FROM LinearPrediction WHERE cityname = '{}' AND country = '{}';".format(user_city, user_country)
+        line_query = "SELECT a, b, yearfrom, r2, nsamples FROM LinearPrediction WHERE cityname = '{}' AND country = '{}';".format(user_city, user_country)
         self.cur.execute(line_query)
-        a_b_yf = self.cur.fetchall()
-        a_b_yf = [(float(t[0]), float(t[1]), int(t[2])) for t in a_b_yf]
-        a_b_yf = a_b_yf[0]
+        a_b_yf_r2_ns = self.cur.fetchall()
+        a_b_yf_r2_ns = [(float(t[0]), float(t[1]), int(t[2]), float(t[3]), int(t[4])) for t in a_b_yf_r2_ns]
+        a_b_yf_r2_ns = a_b_yf_r2_ns[0]
 
-        a = a_b_yf[0]
-        b = a_b_yf[1]
-        yf = a_b_yf[2]
+        a = a_b_yf_r2_ns[0]
+        b = a_b_yf_r2_ns[1]
+        yf = a_b_yf_r2_ns[2]
+        r2 = a_b_yf_r2_ns[3]
+        ns = a_b_yf_r2_ns[4]
 
-        print(a, b, yf)
+        future = np.array(range(2020, 2031))
+        pop_predictions = a*future + b
+        print("\n# of samples: ", ns)
+        print("r2 value: ", r2)
+        for i, p in enumerate(pop_predictions):
+            print("Population prediction for {}: ".format(future[i]), int(p))
 
-        plt.scatter(years, pops)
-        plt.plot(years, a * years + b, '-')
+        plt.scatter(years, pops, label='Population per year')
+        plt.plot(years, a * np.asarray(years) + b, '-', label='Prediction: y = ax + m')
+        plt.show()
 
-        plt.show()  # display figure if you run this code locally
+        # Examples of strongly inclining trend:
+        # 1. Karaj, IR
+        # 2. Tijuana, Mexico
+        # 3. Esfahan, IR
+        # Examples of strongly declining trend:
+        # 1. Nezahualcóyotl, MEX
+        # 2. Detroit, USA
+        # 3. Lodz, PL
+
+        # Example of SQL queries to use if we want to find strongly in-/declining
+        # cities:
+        # SELECT cityname, country, r2 FROM LinearPrediction WHERE nsamples > 4 AND a > 30000 AND r2 > 0.9;
+        # SELECT cityname, country, r2 FROM LinearPrediction WHERE nsamples > 4 AND a < -5000 AND r2 > 0.9;
 
 
     def exit(self):
