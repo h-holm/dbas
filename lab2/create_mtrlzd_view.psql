@@ -51,4 +51,6 @@ SELECT * FROM popdata WHERE name LIKE 'Santiago%';
 -- B) A Virtual View is not stored. It is only displayed. We need ours stored on
 -- disk. Therefore, we create a materialized view, which is a physical copy of the
 -- table. What's more, and perhaps more importantly, is that a materialized view is
--- processed much faster, since it is not recreated for each query.
+-- processed much faster, since it is not recreated for each query. A materialized
+-- view is not updated each time the database is updated. You have to update it
+-- manually.
