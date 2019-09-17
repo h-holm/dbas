@@ -31,7 +31,7 @@ def drop():
         # we can also explicitly start tranaction by executing BEGIN TRANSACTION
     except:
         # Errors in python are caught using try ... except
-        print "ROLLBACK: Sales table does not exists or other error."
+        print("ROLLBACK: Sales table does not exists or other error.")
         connection1.rollback()
         pass
 
@@ -83,13 +83,13 @@ def scenario1():
 def showall():
     cursor1.execute("SELECT * FROM Sales;");
     connection1.commit()
-    print cursor1.rowcount
+    print(cursor1.rowcount)
     for i in range(cursor1.rowcount):
-        print cursor1.fetchone()
+        print(cursor1.fetchone())
     #results = cursor1.fetchall()
-    #print "Sales relation contents:"
+    #print("Sales relation contents:")
     #for r in results:
-    #print r;
+    #print(r;)
 def close():
     connection1.close()
     connection2.close()
