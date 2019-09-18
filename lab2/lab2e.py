@@ -486,14 +486,14 @@ def close():
 # showall()
 # close()
 
-# drop("ab")
-# scenario2()
-# drop("ab")
-# scenario3()
-# drop("ab")
-# scenario4()
-# drop("ab")
-# close()
+drop("ab")
+scenario2()
+drop("ab")
+scenario3()
+drop("ab")
+scenario4()
+drop("ab")
+close()
 
 connection1 = pgdb.Connection(**params)
 connection1.autocommit=False
@@ -503,9 +503,9 @@ connection2 = pgdb.Connection(**params)
 connection2.autocommit=False
 cursor2 = connection2.cursor()
 
-# drop("R")
-# scenario5()
-# drop("R")
+drop("R")
+scenario5()
+drop("R")
 
 drop("R")
 # a1 a2 b1 b2 is not possible in SERIALIZABLE. Attempts raise an error.
