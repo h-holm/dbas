@@ -87,11 +87,16 @@ def scenario2():
     # A non-repeatable read is one in which data read twice inside the same
     # transaction cannot be guaranteed to contain the same value.
 
+    # Phantom tuple:
+    # a phantom read occurs when, in the course of a transaction, two identical
+    # queries are executed, and the collection of rows returned by the second
+    # query is different from the first.
+
     q_crt = "CREATE TABLE ab(a INT PRIMARY KEY, b INT);"
 
-    tr1 = "BEGIN TRANSACTION;"
+    # tr1 = "BEGIN TRANSACTION;"
     # Uncommenting the row below resolves the non-repeatable read.
-    # tr1 = "BEGIN TRANSACTION ISOLATION LEVEL SERIALIZABLE;"
+    tr1 = "BEGIN TRANSACTION ISOLATION LEVEL SERIALIZABLE;"
     q_sel = "SELECT * FROM ab;"
 
     tr2 = "BEGIN TRANSACTION;"
@@ -142,21 +147,25 @@ def scenario3():
     # A non-repeatable read is one in which data read twice inside the same
     # transaction cannot be guaranteed to contain the same value.
 
-    q_crt = "CREATE TABLE ab(a INT PRIMARY KEY, b INT);"
+    q_crt = "CREATE TABLE ab(a INT, b INT);"
+    q_ins = "INSERT INTO ab Values(1, 2);"
 
     # tr1 = "BEGIN TRANSACTION;"
     # tr1 = "BEGIN TRANSACTION ISOLATION LEVEL READ COMMITTED;"
-    tr1 = "BEGIN TRANSACTION ISOLATION LEVEL REPEATABLE READ;"
+    tr1 = "BEGIN TRANSACTION ISOLATION LEVEL READ COMMITTED;"
     q_sel = "SELECT * FROM ab;"
 
     tr2 = "BEGIN TRANSACTION;"
-    q_ins = "INSERT INTO ab VALUES(5, 5);"
+    q_ins2 = "UPDATE ab SET a = 7 WHERE a = 1;"
     comm = "COMMIT;"
 
     print("\nThis scenario demonstrates a non-repeatable read using READ COMMITTED vs. REPEATABLE READ")
 
     print("\nCreate table:\t", q_crt)
     cursor1.execute(q_crt)
+    connection1.commit()
+    print("\nAdd first tuple to relation\t", q_ins)
+    cursor1.execute(q_ins)
     connection1.commit()
 
     print("\nU1 (start):\t", tr1)
@@ -168,10 +177,15 @@ def scenario3():
 
     print("\nU2 (start):\t", tr2)
     cursor2.execute(tr2)
-    print("U2 (ins):\t", q_ins)
-    cursor2.execute(q_ins)
+    print("U2 (upd):\t", q_ins2)
+    cursor2.execute(q_ins2)
     print("U2 (commit):\t", comm)
     cursor2.execute(comm)
+    print("U2 (get all):\t", q_sel)
+    cursor2.execute(q_sel)
+    user_all = cursor2.fetchone()
+    print("\t\t all=", str(user_all))
+
     # connection2.commit()
 
     print("\nU1 (get all):\t", q_sel)
@@ -239,6 +253,7 @@ def scenario4():
         cursor2.execute(comm)
         # connection2.commit()
     except:
+        print("Rolling back")
         connection2.rollback()
 
     print("\nU1 (get all):\t", q_sel)
@@ -388,14 +403,14 @@ def scenario6():
     instantiate()
 
     # Transaction 1
-    # tr1 = "BEGIN TRANSACTION ISOLATION LEVEL SERIALIZABLE;"
-    tr1 = "BEGIN TRANSACTION ISOLATION LEVEL READ COMMITTED;"
+    tr1 = "BEGIN TRANSACTION ISOLATION LEVEL SERIALIZABLE;"
+    # tr1 = "BEGIN TRANSACTION ISOLATION LEVEL READ COMMITTED;"
     print("\nU1 (start t1):\t", tr1)
     cursor1.execute(tr1)
 
     # Transaction 2
-    # tr2 = "BEGIN TRANSACTION ISOLATION LEVEL SERIALIZABLE;"
-    tr2 = "BEGIN TRANSACTION ISOLATION LEVEL READ COMMITTED;"
+    tr2 = "BEGIN TRANSACTION ISOLATION LEVEL SERIALIZABLE;"
+    # tr2 = "BEGIN TRANSACTION ISOLATION LEVEL READ COMMITTED;"
     print("\nU2 (start t2):\t", tr2)
     cursor2.execute(tr2)
 
@@ -471,14 +486,14 @@ def close():
 # showall()
 # close()
 
-drop("ab")
-scenario2()
-drop("ab")
-scenario3()
-drop("ab")
-scenario4()
-drop("ab")
-close()
+# drop("ab")
+# scenario2()
+# drop("ab")
+# scenario3()
+# drop("ab")
+# scenario4()
+# drop("ab")
+# close()
 
 connection1 = pgdb.Connection(**params)
 connection1.autocommit=False
@@ -488,9 +503,9 @@ connection2 = pgdb.Connection(**params)
 connection2.autocommit=False
 cursor2 = connection2.cursor()
 
-drop("R")
-scenario5()
-drop("R")
+# drop("R")
+# scenario5()
+# drop("R")
 
 drop("R")
 # a1 a2 b1 b2 is not possible in SERIALIZABLE. Attempts raise an error.
