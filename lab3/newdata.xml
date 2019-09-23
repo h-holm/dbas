@@ -1,0 +1,22 @@
+<database>
+<city name="Stockholm">
+<data>
+    <year>2018</year>
+    <people>962154</people>
+</data>
+<data>
+    <year>2017</year>
+    <people>949761</people>
+</data>
+<data>
+    <year>2016</year>
+    <people>935619</people>
+</data>
+</city>
+<city name="New York">
+</city>
+<data>
+    <year>2018</year>
+    <people>19491339</people>
+</data>
+</database>
