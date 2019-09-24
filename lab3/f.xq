@@ -1,30 +1,37 @@
 xquery version "3.0";
 
 (: Lab 3 Question e) :)
-(: return $city/../name | $city/name :)
-<manycities>
+
+<database>
   {
   let $mondial := doc("mondial.xml")
-  let $newdata := doc("newdata.xml")
-  let $cities := $mondial/mondial/country//city
+  let $newdata := doc("newdata.xml")/database/*
 
+  let $oldcitypops := (
+    let $cities := $mondial/mondial/country//city
+    for $city in $cities
 
-  for $city in $cities
+    (: Get the population data annually for the specific city :)
+    let $data := (
+      let $citypops := $city/population
+      let $all_years := (
+        for $yeardata in $citypops
+        let $year := <year>{data($yeardata/@year)}</year>
+        let $yearpop := <people>{$yeardata[@year]/text()}</people>
 
-  (: Get the city and keep only its name as an attribute :)
-  let $abbr_city := <city name="{$city/name}">&#xa;</city>
-
-  (: Get the population data annually for the specific city :)
-  let $data := (
-    let $citypops := $city/population
-    let $all_years := (
-      for $yeardata in $citypops
-      let $year := $yeardata[@year]/text()
-      return $year
+        return (<data>&#xa;    {$year}&#xa;    {$yearpop}&#xa;</data>, "&#xa;")
+      )
+      return $all_years
     )
+
+    (: Get the city and keep only its name as an attribute :)
+    let $abbr_city := <city name="{$city/name}">&#xa;{$data}</city>
+
+    (: return ($abbr_city, "&#xa;") :)
+
+    return $abbr_city
   )
 
-  return $citypops
-  (: return ($abbr_city, "&#xa;") :)
+  return ("&#xa;", $newdata, "&#xa;", $oldcitypops, "&#xa;")
   }
-</manycities>
+</database>
